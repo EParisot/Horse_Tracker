@@ -1,7 +1,7 @@
 from Step_Motor import Step_Motor
 import time
 
-step = Step_Motor([4,17,27,22], 0.001)
+step = Step_Motor().start()
 
 step.update(1)
 time.sleep(1)

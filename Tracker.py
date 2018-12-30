@@ -1,18 +1,19 @@
 from Pi_Videostream import PiVideoStream
 from Step_Motor import Step_Motor
-from PIL import Image
+from const import *
+
 from keras.models import load_model
 import numpy as np
-import sys
 import time
-from const import *
+
+###############################################
     
 # Load model
 model = load_model("model.h5")
 print("Model loaded")
 
 # create a threaded video stream, allow the camera sensor to warmup
-vs = PiVideoStream().start() # def: resolution=RESOLUTION, framerate=32
+vs = PiVideoStream().start() # def: resolution=RESOLUTION, framerate=32, format="bgr"
 time.sleep(2.0)
 
 # init motor

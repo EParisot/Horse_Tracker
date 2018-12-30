@@ -4,14 +4,14 @@ from threading import Thread
 from const import *
 
 class PiVideoStream:
-	def __init__(self, resolution=RESOLUTION, framerate=32):
+	def __init__(self, resolution=RESOLUTION, framerate=32, format="bgr"):
 		# initialize the camera and stream
 		self.camera = PiCamera()
 		self.camera.resolution = resolution
 		self.camera.framerate = framerate
 		self.rawCapture = PiRGBArray(self.camera, size=resolution)
 		self.stream = self.camera.capture_continuous(self.rawCapture,
-			format="rgb", use_video_port=True)
+			format=format, use_video_port=True)
  
 		# initialize the frame and the variable used to indicate
 		# if the thread should be stopped
