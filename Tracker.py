@@ -20,18 +20,19 @@ time.sleep(2.0)
 motor = Step_Motor().start() # def: pins=[4,17,27,22], delay=0.001
 
 print("Tracker Started")
-while True:
-    # grab the frame from the threaded video stream 
-    frame = vs.read()
-    image = np.array([frame]) / 255.0
-    
-    # Model prediction
-    pred = model.predict(image)
-    pred = np.argmax(pred)
-    
-    # Motor drive
-    motor.update(pred)
-    
-motor.stop()
-vs.stop()
-print("Stop")
+try:
+    while True:
+        # grab the frame from the threaded video stream 
+        frame = vs.read()
+        image = np.array([frame]) / 255.0
+        
+        # Model prediction
+        pred = model.predict(image)
+        pred = np.argmax(pred)
+        
+        # Motor drive
+        motor.update(pred)
+except:
+    motor.stop()
+    vs.stop()
+    print("Stop")
