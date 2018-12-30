@@ -1,8 +1,8 @@
 tensorflow==1.9.0
 keras==2.1.5
 picamera
-picamera.array
-RPi.GPIO
+"picamera.array"
+"RPi.GPIO"
 cv2
 Pillow
 pandas
