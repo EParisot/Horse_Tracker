@@ -16,8 +16,6 @@ vs = PiVideoStream().start()
 time.sleep(2.0)
 
 motor = Step_Motor()
-step = 16
-delay = 0.001
 
 #test
 try:
@@ -39,14 +37,8 @@ while True:
     pred = np.argmax(pred)
     
     # Motor drive
-    if pred == 1:
-        motor.clockwise(step, delay)
-    elif pred == 2:
-        motor.clockwise(2 * step, delay)
-    elif pred == 3:
-        motor.counter_clockwise(step, delay)
-    elif pred == 4:
-        motor.counter_clockwise(2 * step, delay)
-        
+    motor.update(pred)
+    
+motor.stop()
 vs.stop()
 print("Stop")
