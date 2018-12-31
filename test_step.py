@@ -3,6 +3,9 @@ import time
 
 step = Step_Motor().start()
 
+step.update(0)
+time.sleep(1)
+
 step.update(1)
 time.sleep(1)
 
