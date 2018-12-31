@@ -3,6 +3,7 @@ from Step_Motor import Step_Motor
 import cv2
 from const import *
 import time
+import os
 
 # create a threaded video stream, allow the camera sensor to warmup
 vs = PiVideoStream().start() # def: resolution=RESOLUTION, framerate=32, format="bgr"
@@ -18,14 +19,18 @@ while True:
     # grab the frame from the threaded video stream 
     frame = vs.read()
     # grab command
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    key = cv2.waitKey(1) & 0xFF
+    if key == ord('q'):
         break
-    elif cv2.waitKey(1) & 0xFF == ord('a') and command > 0:
+    elif key == ord('a') and command > 0:
         command -= 1
-    elif cv2.waitKey(1) & 0xFF == ord('z'):
+    elif key == ord('z'):
         command = 2
-    elif cv2.waitKey(1) & 0xFF == ord('e') and command < 4:
+    elif key == ord('e') and command < 4:
         command += 1
+    # save picture
+    pic_name = os.path.join("ML/Datas/Mined", str(command) + "_" + str(time.time()) + ".png")
+    cv2.imwrite(pic_name, frame)
     # print command
     cv2.putText(frame, str(command), (10, 10), \
         cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
@@ -33,7 +38,7 @@ while True:
     cv2.imshow('frame', frame)
     # Motor drive
     motor.update(command)
-
+    time.sleep(0.1)
 motor.stop()
 vs.stop()
 cv2.destroyAllWindows()

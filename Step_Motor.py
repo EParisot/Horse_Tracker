@@ -43,18 +43,18 @@ class Step_Motor:
     def run(self):
         while self.stopped == False:
             if self.dir == 0:
-                self.clockwise(self.delay)
+                self.counter_clockwise(self.delay)
             elif self.dir == 1:
-                self.clockwise(2 * self.delay)
+                self.counter_clockwise(2 * self.delay)
             elif self.dir == 2:
                 for i in range(4):
                     for pin in range(4):
                         GPIO.output(self.control_pins[pin], 0)
                     time.sleep(self.delay)   
             elif self.dir == 3:
-                self.counter_clockwise(2 * self.delay)
+                self.clockwise(2 * self.delay)
             elif self.dir == 4:
-                self.counter_clockwise(self.delay)
+                self.clockwise(self.delay)
         GPIO.cleanup()
     
     def update(self, dir):
