@@ -17,7 +17,7 @@ vs = PiVideoStream().start() # def: resolution=RESOLUTION, framerate=32, format=
 time.sleep(2.0)
 
 # init motor
-motor = Step_Motor().start() # def: pins=[4,17,27,22], delay=0.001
+motor = Step_Motor().start() # def: pins=[4,17,27,22], delay=0.001, zero=2
 
 print("Tracker Started")
 try:
