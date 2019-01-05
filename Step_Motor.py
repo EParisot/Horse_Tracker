@@ -4,7 +4,7 @@ import time
 
 class Step_Motor:
 
-    def __init__(self, pins=[4,17,27,22], delay=0.001):
+    def __init__(self, pins=[4,17,27,22], delay=0.001, zero=2):
         GPIO.setmode(GPIO.BCM)
         self.control_pins = pins
         for pin in self.control_pins:
@@ -20,8 +20,9 @@ class Step_Motor:
             [0,0,1,1],
             [0,0,0,1]
         ]
-        self.dir = 2
+        self.dir = zero
         self.delay = delay
+        self.zero = zero
         self.stopped = False
 
     def clockwise(self, delay):
@@ -42,19 +43,15 @@ class Step_Motor:
     
     def run(self):
         while self.stopped == False:
-            if self.dir == 0:
-                self.counter_clockwise(self.delay)
-            elif self.dir == 1:
-                self.counter_clockwise(2 * self.delay)
-            elif self.dir == 2:
+            if self.dir == self.zero:
                 for i in range(4):
                     for pin in range(4):
                         GPIO.output(self.control_pins[pin], 0)
-                    time.sleep(self.delay)   
-            elif self.dir == 3:
-                self.clockwise(2 * self.delay)
-            elif self.dir == 4:
-                self.clockwise(self.delay)
+                    time.sleep(self.delay) 
+            elif self.dir < self.zero:
+                self.counter_clockwise(self.delay * (self.dir + 1))
+            elif self.dir > self.zero:
+                self.clockwise(self.delay * (self.zero - (self.dir - self.zero - 1)))
         GPIO.cleanup()
     
     def update(self, dir):
