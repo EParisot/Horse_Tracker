@@ -32,11 +32,17 @@ while True:
     if key == ord('q'):
         break
     elif key == ord('a') and command > 0:
-        command -= 1
+        if command - 1 != zero:
+            command -= 1
+        else:
+            command -= 2
     elif key == ord('z'):
         command = zero
     elif key == ord('e') and command < (2 * zero):
-        command += 1
+        if command + 1 != zero:
+            command += 1
+        else:
+            command += 2
     # save picture
     if len(sys.argv) > 1 and sys.argv[1] == "--r":
         pic_name = os.path.join("ML/Datas/Mined", str(command) + "_" + str(time.time()) + ".png")
