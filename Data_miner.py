@@ -7,12 +7,13 @@ import sys
 import os
 
 # create a threaded video stream, allow the camera sensor to warmup
-vs = PiVideoStream().start() # def: resolution=RESOLUTION, framerate=32, format="bgr"
+resolution = (400, 300)
+vs = PiVideoStream(resolution=resolution).start() # def: resolution=RESOLUTION, framerate=32, format="bgr"
 time.sleep(2.0)
 
 # init motor
-zero = 4
-motor = Step_Motor(zero=zero).start() # def: pins=[4,17,27,22], delay=0.001, zero=2
+zero = 3
+motor = Step_Motor(zero=zero, delay=0.002).start() # def: pins=[4,17,27,22], delay=0.001, zero=3
 command = zero
 
 print("Miner Started")
@@ -21,8 +22,8 @@ while True:
     # grab the frame from the threaded video stream 
     frame = vs.read()
     # print command
-    cv2.line(frame, (int((1/4)*RESOLUTION[0]), 0), (int((1/4)*RESOLUTION[0]), RESOLUTION[1]), (255, 255, 255))
-    cv2.line(frame, (int((3/4)*RESOLUTION[0]), 0), (int((3/4)*RESOLUTION[0]), RESOLUTION[1]), (255, 255, 255))
+    cv2.line(frame, (int((1/4)*resolution[0]), 0), (int((1/4)*resolution[0]), resolution[1]), (255, 255, 255))
+    cv2.line(frame, (int((3/4)*resolution[0]), 0), (int((3/4)*resolution[0]), resolution[1]), (255, 255, 255))
     cv2.putText(frame, str(command), (10, 20), \
         cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
     # Display the resulting frame
