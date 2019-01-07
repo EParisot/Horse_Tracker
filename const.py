@@ -1,1 +1,2 @@
 RESOLUTION = (160, 96)
+CROP = 30

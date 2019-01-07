@@ -5,11 +5,12 @@ from const import *
 from keras.models import load_model
 import numpy as np
 import time
+import sys
 
 ###############################################
     
 # Load model
-model = load_model("model.h5")
+model = load_model("model_RNN.h5")
 print("Model loaded, input_shape = ", model.layers[0].input_shape[1:])
 win_size = model.layers[0].input_shape[1:][0]
 
@@ -18,7 +19,8 @@ vs = PiVideoStream().start() # def: resolution=RESOLUTION, framerate=32, format=
 time.sleep(2.0)
 
 # init motor
-motor = Step_Motor().start() # def: pins=[4,17,27,22], delay=0.001, zero=3
+zero = int(model.layers[-1].output_shape[-1]/2)
+motor = Step_Motor(zero=zero).start() # def: pins=[4,17,27,22], delay=0.001, zero=3
 
 print("Tracker Started")
 try:
@@ -28,6 +30,7 @@ try:
         # grab the frame from the threaded video stream 
         frame = vs.read()
         image = np.array([frame]) / 255.0
+        image = image[:, CROP:]
 
         if i % win_size == 0: 
             # Model prediction
@@ -41,6 +44,12 @@ try:
         # Motor drive
         motor.update(pred)
         i += 1
+
+except KeyboardInterrupt:
+    print("Stop")
+except:
+    print("Unexpected error:", sys.exc_info()[0])
+    
 except:
     motor.stop()
     vs.stop()
