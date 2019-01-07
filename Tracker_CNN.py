@@ -32,13 +32,13 @@ try:
         # Model prediction
         pred = model.predict(image)
         pred = np.argmax(pred)
-        
+
         # Motor drive
         motor.update(pred)
 except KeyboardInterrupt:
     print("Stop")
 except:
-    print("Unexpected error:", sys.exc_info()[0])
+    print("Unexpected error:", sys.exc_info())
     
 motor.stop()
 vs.stop()

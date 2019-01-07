@@ -24,33 +24,31 @@ motor = Step_Motor(zero=zero).start() # def: pins=[4,17,27,22], delay=0.001, zer
 
 print("Tracker Started")
 try:
-    i = 0
     steps = []
     while True:
         # grab the frame from the threaded video stream 
         frame = vs.read()
         image = np.array([frame]) / 255.0
         image = image[:, CROP:]
-
-        if i % win_size == 0: 
+        pred = None
+        if len(steps) == win_size:
             # Model prediction
-            pred = model.predict(np.asarray(steps))
+            steps = np.array(steps)
+            pred = model.predict(steps) ## Problem HERE
             pred = np.argmax(pred)
-            i = 0
             steps = []
-        else:
-            steps.append(image)
-            
+        steps.append(image)
+        
         # Motor drive
-        motor.update(pred)
-        i += 1
+        if pred != None:
+            motor.update(pred)
+        
 
 except KeyboardInterrupt:
     print("Stop")
 except:
-    print("Unexpected error:", sys.exc_info()[0])
+    print("Unexpected error:", sys.exc_info())
     
-except:
-    motor.stop()
-    vs.stop()
-    print("Stop")
+motor.stop()
+vs.stop()
+print("Stop")
