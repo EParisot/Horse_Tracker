@@ -26,14 +26,14 @@ while True:
     key = cv2.waitKey(1) & 0xFF
     if key == ord('q'):
         break
-    elif key == ord('a') and command >= 0:
+    elif key == ord('a') and command > 0:
         if command - 1 != zero:
             command -= 1
         else:
             command -= 2
     elif key == ord('z'):
         command = zero
-    elif key == ord('e') and command < (2 * zero) - 1:
+    elif key == ord('e') and command < (2 * zero):
         if command + 1 != zero:
             command += 1
         else:
