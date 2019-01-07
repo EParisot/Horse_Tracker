@@ -51,6 +51,9 @@ while True:
             img = cv2.resize(frame, RESOLUTION)
         cv2.imwrite(pic_name, img)
     # print command
+    # horizontal line
+    cv2.line(frame, (0, CROP), (RESOLUTION[0], CROP), (255, 255, 255))
+    # vertical lines
     cv2.line(frame, (int((1/4)*resolution[0]), 0), (int((1/4)*resolution[0]), resolution[1]), (255, 255, 255))
     cv2.line(frame, (int((3/4)*resolution[0]), 0), (int((3/4)*resolution[0]), resolution[1]), (255, 255, 255))
     cv2.putText(frame, str(command), (10, resolution[1] - 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
