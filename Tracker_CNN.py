@@ -31,7 +31,7 @@ try:
         
         # Model prediction
         pred = model.predict(image)
-        pred = np.argmax(pred) + 1
+        pred = np.argmax(pred)
         
         # Motor drive
         motor.update(pred)
