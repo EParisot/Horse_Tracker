@@ -52,7 +52,7 @@ while True:
         cv2.imwrite(pic_name, img)
     # print command
     # horizontal line
-    cv2.line(frame, (0, CROP), (RESOLUTION[0], CROP), (255, 255, 255))
+    cv2.line(frame, (0, int(CROP * (resolution[1] / RESOLUTION[1]))), (resolution[0], int(CROP * (resolution[1] / RESOLUTION[1]))), (255, 255, 255))
     # vertical lines
     cv2.line(frame, (int((1/4)*resolution[0]), 0), (int((1/4)*resolution[0]), resolution[1]), (255, 255, 255))
     cv2.line(frame, (int((3/4)*resolution[0]), 0), (int((3/4)*resolution[0]), resolution[1]), (255, 255, 255))
