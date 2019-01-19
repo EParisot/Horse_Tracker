@@ -27,7 +27,7 @@ from Step_Motor import Step_Motor
 
 # init motor
 zero = 5
-motor = Step_Motor(zero=zero, delay=0.003).start() # def: pins=[4,17,27,22], delay=0.001, zero=3
+motor = Step_Motor(zero=zero, delay=0.001).start() # def: pins=[4,17,27,22], delay=0.001, zero=3
 command = zero
 
 logging.basicConfig(level = logging.DEBUG)
@@ -150,12 +150,14 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
             self.send_header('Content-Type', 'multipart/x-mixed-replace; boundary=FRAME')
             self.end_headers()
             try:
+                stamp = time.time()
                 while True:
                     with output.condition:
                         output.condition.wait()
                         frame = output.frame
-                    if pos.rec == '1':
-                        #print("Got to REC HERE")
+                    if pos.rec == '1' and time.time() - stamp >= 0.1:
+                        # Record images at 10 fps
+                        stamp = time.time()
                         dataBytesIO = io.BytesIO(frame)
                         img = Image.open(dataBytesIO)
                         img.save(os.path.join("/home/pi/RemoteControlPi/output", str(time.time()) + '_' + str(round(pos.x, 2)) + '_' + str(round(pos.y, 2)) + ".png"))

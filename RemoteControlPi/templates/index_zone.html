@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <meta name="mobile-web-app-capable" content="yes">
     <link rel="shortcut icon" href="{{ url_for('static', filename='static/favicon.ico') }}">
     <link rel="stylesheet" href="static/style.css"/>
     <script src="static/jquery-3.2.1.min.js"></script>
@@ -17,9 +18,8 @@
             Live Stream
             <ul>
                 <li id="position">Position: </li>
-                <li id="rec_info">Rec: </li>
+                <li id="rec_info">Rec: <br><img id="rec" src="/static/recOff.png" onclick="fctRec()"></img></li>
             </ul>
-			<img id="rec" src="/static/recOff.png" onclick="fctRec()"></img>
         </div>
         <div id="item"></div>
         <script language="JavaScript">

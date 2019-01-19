@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 from threading import Thread
 import time
+import math
 
 class Step_Motor:
 
@@ -50,9 +51,9 @@ class Step_Motor:
                             GPIO.output(self.control_pins[pin], 0)
                         time.sleep(self.delay) 
                 elif self.dir < self.zero:
-                    self.counter_clockwise(self.delay * (self.dir + 1))
+                    self.counter_clockwise(self.delay * ((self.dir + 1) ** 2))
                 elif self.dir > self.zero:
-                    self.clockwise(self.delay * (self.zero - (self.dir - self.zero - 1)))
+                    self.clockwise(self.delay * ((self.zero - (self.dir - self.zero - 1)) ** 2))
             else:
                 print("Bad-Value")
         GPIO.cleanup()
