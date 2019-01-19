@@ -18,6 +18,7 @@
             <ul>
                 <li id="position">Position: </li>
             </ul>
+			<img id="rec" src="/static/recOff.png" onclick="fctRecOn()"></img>
         </div>
         <div id="item"></div>
         <script language="JavaScript">
@@ -37,7 +38,8 @@
 
         var position = {
             x: cont_info.width / 2 - pos_info.width / 2,
-            y: cont_info.height / 2 - pos_info.height / 2
+            y: cont_info.height / 2 - pos_info.height / 2,
+			rec: rec
         };
         setTranslate(position.x, position.y, dragItem);
 
@@ -129,7 +131,19 @@
         function setOnScreen(position) {
             document.getElementById('position').innerHTML = 'Position: x = ' + position.x.toPrecision(2) + ' - y = ' + position.y.toPrecision(2)
         }
-
+		
+		var rec = false;
+		function fctRecOn() {
+			rec_img = document.getElementById("rec")
+			if (rec == false) {
+				rec = true;
+				rec_img.src = "/static/recOn.png";
+			} else {
+				rec = false;
+				rec_img.src = "/static/recOff.png";
+			}
+			window.location.reload(true);
+		}
     </script>
   </body>
 </html>

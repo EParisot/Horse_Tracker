@@ -17,6 +17,11 @@ body {
   border-radius: 100%;
 }
 
+#rec {
+  width: 20px;
+  height: 20px;
+}
+
 #video_source{
   display:block;
   width:100%; 
