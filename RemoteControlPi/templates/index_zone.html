@@ -17,8 +17,9 @@
             Live Stream
             <ul>
                 <li id="position">Position: </li>
+                <li id="rec_info">Rec: </li>
             </ul>
-			<img id="rec" src="/static/recOff.png" onclick="fctRecOn()"></img>
+			<img id="rec" src="/static/recOff.png" onclick="fctRec()"></img>
         </div>
         <div id="item"></div>
         <script language="JavaScript">
@@ -39,7 +40,7 @@
         var position = {
             x: cont_info.width / 2 - pos_info.width / 2,
             y: cont_info.height / 2 - pos_info.height / 2,
-			rec: rec
+			rec: '0'
         };
         setTranslate(position.x, position.y, dragItem);
 
@@ -129,20 +130,23 @@
 
         // change the on-screen data
         function setOnScreen(position) {
-            document.getElementById('position').innerHTML = 'Position: x = ' + position.x.toPrecision(2) + ' - y = ' + position.y.toPrecision(2)
+            document.getElementById('position').innerHTML = 'Position: <br>x = ' + position.x.toPrecision(2) + ' - y = ' + position.y.toPrecision(2)
         }
 		
-		var rec = false;
-		function fctRecOn() {
-			rec_img = document.getElementById("rec")
-			if (rec == false) {
-				rec = true;
+		function fctRec() {
+			rec_img = document.getElementById("rec");
+			if (position.rec == '0') {
+				position.rec = '1';
 				rec_img.src = "/static/recOn.png";
 			} else {
-				rec = false;
+				position.rec = '0';
 				rec_img.src = "/static/recOff.png";
 			}
-			window.location.reload(true);
+            query_string = '?' + $.param(position);
+            // use the following function instead the usual $.post
+            // so that we can throttle the rate of sending data
+            // good practice for not "choking" the network
+            send_throttled_data(server_address, query_string, position);
 		}
     </script>
   </body>

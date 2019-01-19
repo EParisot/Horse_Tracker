@@ -4,7 +4,9 @@
 import signal
 import sys
 import logging
-from time import sleep
+import time
+import os
+from PIL import Image
 
 # check if it's ran with Python3
 assert sys.version_info[0:1] == (3,)
@@ -67,18 +69,27 @@ class WebServerThread(Thread):
         logging.info('Stopping Flask server')
         self.srv.shutdown()
 
+class Position(object):
+    def __init__(self):
+        self.x = 0
+        self.y = 0
+        self.rec = 0
+
+pos = Position()
+
 @app.route("/tracker", methods = ["POST"])
 def commands():
     # get the query
     args = request.args
     
-    x = float(args['x'])
-    y = float(args['y'])
+    pos.x = float(args['x'])
+    pos.y = float(args['y'])
+    pos.rec = args['rec']
 
     ###############################################
     #controls
 
-    command = int(round(x * 2 * zero, 0))
+    command = int(round(pos.x * 2 * zero, 0))
     motor.update(command)
 
     ###############################################
@@ -143,6 +154,11 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
                     with output.condition:
                         output.condition.wait()
                         frame = output.frame
+                    if pos.rec == '1':
+                        #print("Got to REC HERE")
+                        dataBytesIO = io.BytesIO(frame)
+                        img = Image.open(dataBytesIO)
+                        img.save(os.path.join("/home/pi/RemoteControlPi/output", str(time.time()) + '_' + str(round(pos.x, 2)) + '_' + str(round(pos.y, 2)) + ".png"))
                     self.wfile.write(b'--FRAME\r\n')
                     self.send_header('Content-Type', 'image/jpeg')
                     self.send_header('Content-Length', len(frame))
@@ -190,7 +206,10 @@ if __name__ == "__main__":
 
     # and run it indefinitely
     while not keyboard_trigger.is_set():
-        sleep(0.5)
+        #if output.frame != None:
+        #    output.frame.seek(0)
+        #    frame = Image.frombytes(mode="RGB", size=(320,240), data=output.frame)
+        time.sleep(0.1)
 
     # until some keyboard event is detected
     logging.info("Keyboard event detected")
