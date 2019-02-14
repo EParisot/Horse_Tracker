@@ -4,7 +4,7 @@ import time
 
 class Step_Motor:
 
-    def __init__(self, pins=[4,17,27,22], delay=0.001, zero=3):
+    def __init__(self, pins=[4,17,27,22], delay=0.003, zero=3):
         GPIO.setmode(GPIO.BCM)
         self.control_pins = pins
         for pin in self.control_pins:

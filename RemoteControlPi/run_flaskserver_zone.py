@@ -27,7 +27,7 @@ from Step_Motor import Step_Motor
 
 # init motor
 zero = 5
-motor = Step_Motor(zero=zero, delay=0.001).start() # def: pins=[4,17,27,22], delay=0.001, zero=3
+motor = Step_Motor(zero=zero, delay=0.002).start() # def: pins=[4,17,27,22], delay=0.001, zero=3
 command = zero
 
 logging.basicConfig(level = logging.DEBUG)
