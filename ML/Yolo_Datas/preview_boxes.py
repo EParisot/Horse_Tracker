@@ -5,6 +5,7 @@ import ctypes
 i = 0
 images = [file if ".png" in file else None for file in os.listdir('.')]
 img = None
+key = None
 
 print("N : next \nP: previous \nD : delete", flush=True)
 
@@ -22,7 +23,7 @@ cv2.namedWindow("Frame")
 cv2.setMouseCallback("Frame", mouse_drawing)
 
 while True:
-    if i >= 0 and i < len(images) and images[i] != None:
+    if i >= 0 and i < len(images) and images[i] != None and "png" in images[i]:
         # open image and draw ROI
         img = cv2.imread(images[i])
         x = int(float(images[i].split('_')[1]) * img.shape[1])
@@ -41,9 +42,13 @@ while True:
             # Remove file
             if ctypes.windll.user32.MessageBoxW(0, "This will remove file !", "Warning", 1) == 1:
                 os.remove(images[i])
+                images[i] = None
                 i += 1
     elif i >= 0 and i < len(images) and images[i] == None:
-        i += 1
+        if key == ord('p'):
+            i -= 1
+        else:
+            i += 1
     else:
         break
 cv2.destroyAllWindows()

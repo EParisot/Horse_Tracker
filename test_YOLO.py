@@ -2,16 +2,20 @@ from keras.models import load_model
 import numpy as np
 import cv2
 import os
+import sys
 
 i = 0
 directory = "ML/Yolo_Datas/Val"
 images = [file if ".png" in file else None for file in os.listdir(directory)]
 img = None
-model = load_model("model_YOLO.h5")
-w = int(model.layers[-2].output_shape[-1])
-h = int(model.layers[-1].output_shape[-1])
-print("Model Loaded", "outputs = ", str(w), " " + str(h), flush=True)
-
+if len(sys.argv) > 1:
+    model = load_model(sys.argv[1])
+    w = int(model.layers[-2].output_shape[-1])
+    h = int(model.layers[-1].output_shape[-1])
+    print("Model ", sys.argv[1], " Loaded", "outputs = ", str(w), " " + str(h), flush=True)
+else:
+    print("No model provided, please soecify a path as argv 1")
+    exit()
 
 
 while True:
