@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="mobile-web-app-capable" content="yes">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='static/favicon.ico') }}">
-    <link rel="stylesheet" href="static/style.css"/>
+    <link rel="shortcut icon" href="static/favicon.ico">
+    <link rel="stylesheet" href="static/style.css">
     <script src="static/jquery-3.2.1.min.js"></script>
     <script src="static/throttle.js"></script>
 
@@ -17,8 +17,8 @@
         <div class="infos">
             Live Stream
             <ul>
-                <li id="rec_info">Rec: <br><img id="rec" src="/static/recOff.png" onclick="fctRec()"></img></li>
-                <li id="mode_info">Mode: <br><img id="mode" src="/static/modeMan.png" onclick="fctMode()"></img></li>
+                <li id="rec_info">Rec: <br><img id="rec" src="static/recOff.png" onclick="fctRec()"></img></li>
+                <li id="mode_info">Mode: <br><img id="mode" src="static/modeMan.png" onclick="fctMode()"></img></li>
             </ul>
         </div>
         <div id="item"></div>
@@ -133,10 +133,10 @@
 			rec_img = document.getElementById("rec");
 			if (position.rec == '0') {
 				position.rec = '1';
-				rec_img.src = "/static/recOn.png";
+				rec_img.src = "static/recOn.png";
 			} else {
 				position.rec = '0';
-				rec_img.src = "/static/recOff.png";
+				rec_img.src = "static/recOff.png";
 			}
             query_string = '?' + $.param(position);
             // use the following function instead the usual $.post
@@ -149,12 +149,12 @@
             mode_img = document.getElementById("mode");
             if (position.mode == '0') {
                 position.mode = '1';
-                mode_img.src = "/static/modeAuto.png";
+                mode_img.src = "static/modeAuto.png";
                 item = document.getElementById("item");
                 item.style.display = "none";
             } else {
                 position.mode = '0';
-                mode_img.src = "/static/modeMan.png";
+                mode_img.src = "static/modeMan.png";
                 item = document.getElementById("item");
                 item.style.display = "block";
                 xOffset = cont_info.width / 2 - pos_info.width / 2;

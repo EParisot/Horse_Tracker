@@ -171,7 +171,7 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
         global motor
         if self.model == None:
             logging.info("Auto mode : Loading Model ...")
-            self.model = load_model("../Documents/Horse_Tracker/model_YOLO.h5")
+            self.model = load_model("../model_YOLO.h5")
             self.graph = tf.get_default_graph()
             logging.info("Model Loaded")
         image = np.array([np_img / 255.0])
