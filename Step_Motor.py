@@ -1,10 +1,11 @@
 import RPi.GPIO as GPIO
 from threading import Thread
 import time
+import math
 
 class Step_Motor:
 
-    def __init__(self, pins=[4,17,27,22], delay=0.003, zero=3):
+    def __init__(self, pins=[4,17,27,22], delay=0.001, zero=3):
         GPIO.setmode(GPIO.BCM)
         self.control_pins = pins
         for pin in self.control_pins:
@@ -43,15 +44,18 @@ class Step_Motor:
     
     def run(self):
         while self.stopped == False:
-            if self.dir == self.zero:
-                for i in range(4):
-                    for pin in range(4):
-                        GPIO.output(self.control_pins[pin], 0)
-                    time.sleep(self.delay) 
-            elif self.dir < self.zero:
-                self.counter_clockwise(self.delay * (self.dir + 1))
-            elif self.dir > self.zero:
-                self.clockwise(self.delay * (self.zero - (self.dir - self.zero - 1)))
+            if self.dir >= 0 and self.dir <= 2 * self.zero:
+                if self.dir == self.zero:
+                    for i in range(4):
+                        for pin in range(4):
+                            GPIO.output(self.control_pins[pin], 0)
+                        time.sleep(self.delay) 
+                elif self.dir < self.zero:
+                    self.counter_clockwise(self.delay * ((self.dir + 1) ** 2))
+                elif self.dir > self.zero:
+                    self.clockwise(self.delay * ((self.zero - (self.dir - self.zero - 1)) ** 2))
+            else:
+                print("Bad-Value")
         GPIO.cleanup()
     
     def update(self, dir):

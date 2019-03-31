@@ -11,6 +11,9 @@ import numpy as np
 from keras.models import load_model
 import tensorflow as tf
 import cv2
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
+from const import *
+
 
 # check if it's ran with Python3
 assert sys.version_info[0:1] == (3,)
@@ -30,7 +33,7 @@ from http import server
 from Step_Motor import Step_Motor
 
 # init motor
-zero = 3
+zero = ZERO
 motor = Step_Motor(zero=zero, delay=0.002).start() # def: pins=[4,17,27,22], delay=0.001, zero=3
 command = zero
 
@@ -174,9 +177,11 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
         image = np.array([np_img / 255.0])
         with self.graph.as_default():
             pred = self.model.predict(image)
-        x_pred = np.argmax(pred[0])
-        y_pred = np.argmax(pred[1])
-        motor.update(x_pred)
+        pres = np.argmax(pred[0])
+        if pres == 1:
+            x_pred = np.argmax(pred[1])
+            y_pred = np.argmax(pred[2])
+            motor.update(x_pred)
         logging.info("Prediction : %f ; %f" % (x_pred, y_pred))
         return self.draw_circle(np_img, x_pred, y_pred)
     

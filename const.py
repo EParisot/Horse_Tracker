@@ -1,2 +1,2 @@
 RESOLUTION = (320, 240)
-CROP = 0
+ZERO = 3

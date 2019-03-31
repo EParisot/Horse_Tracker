@@ -39,10 +39,12 @@ if directory and model:
             pred = model.predict(img_to_pred)
             for j, elem in enumerate(pred):
                 pred[j] = np.argmax(elem)
-            x = int(img.shape[1] / w) * pred[0] + int((img.shape[1] / w) / 2)
-            y = int(img.shape[0] / h) * pred[1] + int((img.shape[0] / h) / 2)
-            cv2.circle(img,(x, y), 50, (0, 255, 0), 2)        
-            cv2.imshow('Frame',img)
+            pres = pred[0]
+            if pres == 1:
+                x = int(img.shape[1] / w) * pred[1] + int((img.shape[1] / w) / 2)
+                y = int(img.shape[0] / h) * pred[2] + int((img.shape[0] / h) / 2)
+                cv2.circle(img,(x, y), 50, (0, 255, 0), 2)        
+                cv2.imshow('Frame',img)
             # key events
             key = cv2.waitKey(0)
             if key == 27:
