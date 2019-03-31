@@ -1,5 +1,5 @@
 # You MUST run this with python3
-# To Run:  python3 run_flaskserver.py
+# To Run:  python3 run_flaskserver_zone.py
 
 import signal
 import sys
@@ -7,6 +7,10 @@ import logging
 import time
 import os
 from PIL import Image
+import numpy as np
+from keras.models import load_model
+import tensorflow as tf
+import cv2
 
 # check if it's ran with Python3
 assert sys.version_info[0:1] == (3,)
@@ -26,7 +30,7 @@ from http import server
 from Step_Motor import Step_Motor
 
 # init motor
-zero = 5
+zero = 3
 motor = Step_Motor(zero=zero, delay=0.002).start() # def: pins=[4,17,27,22], delay=0.001, zero=3
 command = zero
 
@@ -74,6 +78,7 @@ class Position(object):
         self.x = 0
         self.y = 0
         self.rec = 0
+        self.mode = 0
 
 pos = Position()
 
@@ -85,12 +90,13 @@ def commands():
     pos.x = float(args['x'])
     pos.y = float(args['y'])
     pos.rec = args['rec']
-
+    pos.mode = args['mode']
+    
     ###############################################
     #controls
-
-    command = int(round(pos.x * 2 * zero, 0))
-    motor.update(command)
+    if pos.mode == '0':
+        command = int(round(pos.x * 2 * zero, 0))
+        motor.update(command)
 
     ###############################################
 
@@ -141,6 +147,39 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
     '''
     Implementing GET request for the video stream.
     '''
+    def __init__(self, *args, **kwargs):
+        self.model = None
+        self.graph = None
+        super().__init__(*args, **kwargs)
+        
+    def draw_circle(self, np_img, x_pred, y_pred):
+        w = int(self.model.layers[-2].output_shape[-1])
+        h = int(self.model.layers[-1].output_shape[-1])
+        x = int(np_img.shape[1] / w) * x_pred + int((np_img.shape[1] / w) / 2)
+        y = int(np_img.shape[0] / h) * y_pred + int((np_img.shape[0] / h) / 2)
+        cv2.circle(np_img,(x, y), 50, (0, 255, 0), 2)
+        img = Image.fromarray(np_img)
+        with io.BytesIO() as output:
+            img.save(output, format="JPEG")
+            img = output.getvalue()
+        return img
+    
+    def make_prediction(self, np_img):
+        global motor
+        if self.model == None:
+            logging.info("Auto mode : Loading Model ...")
+            self.model = load_model("../Documents/Horse_Tracker/model_YOLO.h5")
+            self.graph = tf.get_default_graph()
+            logging.info("Model Loaded")
+        image = np.array([np_img / 255.0])
+        with self.graph.as_default():
+            pred = self.model.predict(image)
+        x_pred = np.argmax(pred[0])
+        y_pred = np.argmax(pred[1])
+        motor.update(x_pred)
+        logging.info("Prediction : %f ; %f" % (x_pred, y_pred))
+        return self.draw_circle(np_img, x_pred, y_pred)
+    
     def do_GET(self):
         if self.path == '/stream.mjpg':
             self.send_response(200)
@@ -155,12 +194,19 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
                     with output.condition:
                         output.condition.wait()
                         frame = output.frame
+                    # Save video images with labels
                     if pos.rec == '1' and time.time() - stamp >= 0.1:
                         # Record images at 10 fps
                         stamp = time.time()
                         dataBytesIO = io.BytesIO(frame)
                         img = Image.open(dataBytesIO)
                         img.save(os.path.join("/home/pi/RemoteControlPi/output", str(time.time()) + '_' + str(round(pos.x, 2)) + '_' + str(round(pos.y, 2)) + ".png"))
+                    # Make prediction
+                    if pos.mode == '1':
+                        dataBytesIO = io.BytesIO(frame)
+                        img = Image.open(dataBytesIO)
+                        np_img = np.asarray(img)
+                        frame = self.make_prediction(np_img)
                     self.wfile.write(b'--FRAME\r\n')
                     self.send_header('Content-Type', 'image/jpeg')
                     self.send_header('Content-Length', len(frame))
@@ -208,9 +254,6 @@ if __name__ == "__main__":
 
     # and run it indefinitely
     while not keyboard_trigger.is_set():
-        #if output.frame != None:
-        #    output.frame.seek(0)
-        #    frame = Image.frombytes(mode="RGB", size=(320,240), data=output.frame)
         time.sleep(0.1)
 
     # until some keyboard event is detected
@@ -228,3 +271,4 @@ if __name__ == "__main__":
     logging.info("Stopped all threads")
 
     sys.exit(0)
+cd 

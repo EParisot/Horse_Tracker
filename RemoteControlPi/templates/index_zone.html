@@ -17,8 +17,8 @@
         <div class="infos">
             Live Stream
             <ul>
-                <li id="position">Position: </li>
                 <li id="rec_info">Rec: <br><img id="rec" src="/static/recOff.png" onclick="fctRec()"></img></li>
+                <li id="mode_info">Mode: <br><img id="mode" src="/static/modeMan.png" onclick="fctMode()"></img></li>
             </ul>
         </div>
         <div id="item"></div>
@@ -40,8 +40,10 @@
         var position = {
             x: cont_info.width / 2 - pos_info.width / 2,
             y: cont_info.height / 2 - pos_info.height / 2,
-			rec: '0'
+			rec: '0',
+            mode: '0'
         };
+        
         setTranslate(position.x, position.y, dragItem);
 
         var active = false;
@@ -123,16 +125,10 @@
         // function for throttling the rate of sending data
         // sends data every 250 ms
         var send_throttled_data = throttle(function(server_address, query_string, sent_data){
-            setOnScreen(sent_data);
             console.log('move', sent_data);
             $.post(server_address + query_string);
         }, 250);
-
-        // change the on-screen data
-        function setOnScreen(position) {
-            document.getElementById('position').innerHTML = 'Position: <br>x = ' + position.x.toPrecision(2) + ' - y = ' + position.y.toPrecision(2)
-        }
-		
+	
 		function fctRec() {
 			rec_img = document.getElementById("rec");
 			if (position.rec == '0') {
@@ -148,6 +144,31 @@
             // good practice for not "choking" the network
             send_throttled_data(server_address, query_string, position);
 		}
+        
+        function fctMode() {
+            mode_img = document.getElementById("mode");
+            if (position.mode == '0') {
+                position.mode = '1';
+                mode_img.src = "/static/modeAuto.png";
+                item = document.getElementById("item");
+                item.style.display = "none";
+            } else {
+                position.mode = '0';
+                mode_img.src = "/static/modeMan.png";
+                item = document.getElementById("item");
+                item.style.display = "block";
+                xOffset = cont_info.width / 2 - pos_info.width / 2;
+                yOffset = cont_info.height / 2 - pos_info.height / 2;
+                position.x = 0.50;
+                position.y = 0.50;
+                setTranslate(xOffset, yOffset, dragItem);
+            }
+            query_string = '?' + $.param(position);
+            // use the following function instead the usual $.post
+            // so that we can throttle the rate of sending data
+            // good practice for not "choking" the network
+            send_throttled_data(server_address, query_string, position);
+        }
     </script>
   </body>
 </html>
