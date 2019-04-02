@@ -16,7 +16,7 @@ if len(sys.argv) > 1:
                 model = load_model(sys.argv[i + 1])
                 w = int(model.layers[-2].output_shape[-1])
                 h = int(model.layers[-1].output_shape[-1])
-                print("Model ", sys.argv[1], " Loaded", "outputs = ", str(w), " " + str(h), flush=True)
+                print("Model ", sys.argv[i + 1], " Loaded\n", "outputs = ", str(w), " " + str(h), flush=True)
             else:
                 print("No model provided, please specify a model (--m model.h5)")
                 exit()
