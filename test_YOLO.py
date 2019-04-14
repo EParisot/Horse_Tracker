@@ -44,7 +44,8 @@ if directory and model:
                 x = int(img.shape[1] / w) * pred[1] + int((img.shape[1] / w) / 2)
                 y = int(img.shape[0] / h) * pred[2] + int((img.shape[0] / h) / 2)
                 cv2.circle(img,(x, y), 50, (0, 255, 0), 2)        
-                cv2.imshow('Frame',img)
+            cv2.imshow('Frame',img)
+            print(pred, flush=True)
             # key events
             key = cv2.waitKey(0)
             if key == 27:

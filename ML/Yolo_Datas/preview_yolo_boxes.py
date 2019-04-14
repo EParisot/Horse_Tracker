@@ -15,7 +15,7 @@ def mouse_drawing(event, x, y, flags, params):
         img = cv2.imread(images[i])
         cv2.circle(img,(x, y), 50, (0, 0, 255), 2)
         # rename file
-        os.rename(images[i], images[i].split('_')[0] + "_" + str(round(x/img.shape[1], 2)) + "_" + str(round(y/img.shape[0], 2)) + ".png")
+        os.rename(images[i], images[i].split('_')[0] + "_1_" + str(round(x/img.shape[1], 2)) + "_" + str(round(y/img.shape[0], 2)) + ".png")
         images = os.listdir('.')
         cv2.imshow('Frame',img)
         
@@ -26,8 +26,8 @@ while True:
     if i >= 0 and i < len(images) and images[i] != None and "png" in images[i]:
         # open image and draw ROI
         img = cv2.imread(images[i])
-        x = int(float(images[i].split('_')[1]) * img.shape[1])
-        y = int(float(images[i].split('_')[2].split('.png')[0]) * img.shape[0])
+        x = int(float(images[i].split('_')[2]) * img.shape[1])
+        y = int(float(images[i].split('_')[3].split('.png')[0]) * img.shape[0])
         cv2.circle(img,(x, y), 50, (0, 255, 0), 2)        
         cv2.imshow('Frame',img)
         # key events
