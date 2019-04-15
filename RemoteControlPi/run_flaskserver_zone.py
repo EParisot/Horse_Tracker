@@ -12,7 +12,7 @@ from keras.models import load_model
 import tensorflow as tf
 import cv2
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
-from const import *
+import const
 
 
 # check if it's ran with Python3
@@ -33,7 +33,7 @@ from http import server
 from Step_Motor import Step_Motor
 
 # init motor
-zero = ZERO
+zero = const.ZERO
 motor = Step_Motor(zero=zero, delay=0.002).start() # def: pins=[4,17,27,22], delay=0.001, zero=3
 command = zero
 
@@ -51,7 +51,7 @@ def signal_handler(signal, frame):
 
 # Directory Path can change depending on where you install this file.  Non-standard installations
 # may require you to change this directory.
-directory_path = '/home/pi/RemoteControlPi/static'
+directory_path = 'static'
 
 HOST = "0.0.0.0"
 WEB_PORT = 5000
@@ -171,18 +171,20 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
         global motor
         if self.model == None:
             logging.info("Auto mode : Loading Model ...")
-            self.model = load_model("../model_YOLO.h5")
+            self.model = load_model(os.path.join("../", const.MODEL))
             self.graph = tf.get_default_graph()
             logging.info("Model Loaded")
         image = np.array([np_img / 255.0])
         with self.graph.as_default():
             pred = self.model.predict(image)
         pres = np.argmax(pred[0])
+        x_pred = np.argmax(pred[1])
+        y_pred = np.argmax(pred[2])
         if pres == 1:
-            x_pred = np.argmax(pred[1])
-            y_pred = np.argmax(pred[2])
             motor.update(x_pred)
-        logging.info("Prediction : %f ; %f" % (x_pred, y_pred))
+        else:
+            motor.update(const.ZERO)
+        logging.info("Prediction : %d ; %d" % (int(x_pred), int(y_pred)))
         return self.draw_circle(np_img, x_pred, y_pred)
     
     def do_GET(self):
@@ -240,7 +242,8 @@ if __name__ == "__main__":
     signal.signal(signal.SIGTERM, signal_handler)
 
     # firing up the video camera (pi camera)
-    camera = picamera.PiCamera(resolution='320x240', framerate=30)
+    camera = picamera.PiCamera(resolution=str(const.RESOLUTION[0]) + "x" + str(const.RESOLUTION[1]),
+                               framerate=const.FPS)
     output = StreamingOutput()
     camera.start_recording(output, format='mjpeg')
     logging.info("Started recording with picamera")
