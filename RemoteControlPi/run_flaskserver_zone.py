@@ -207,7 +207,7 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
                         stamp = time.time()
                         dataBytesIO = io.BytesIO(frame)
                         img = Image.open(dataBytesIO)
-                        img.save(os.path.join("/home/pi/RemoteControlPi/output", str(time.time()) + '_' + str(round(pos.x, 2)) + '_' + str(round(pos.y, 2)) + ".png"))
+                        img.save(os.path.join("output", str(time.time()) + '_1_' + str(round(pos.x, 2)) + '_' + str(round(pos.y, 2)) + ".png"))
                     # Make prediction
                     if pos.mode == '1':
                         dataBytesIO = io.BytesIO(frame)
@@ -279,4 +279,3 @@ if __name__ == "__main__":
     logging.info("Stopped all threads")
 
     sys.exit(0)
-cd 

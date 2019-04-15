@@ -138,6 +138,8 @@
 				position.rec = '0';
 				rec_img.src = "static/recOff.png";
 			}
+            position.x = 0.50;
+            position.y = 0.50;
             query_string = '?' + $.param(position);
             // use the following function instead the usual $.post
             // so that we can throttle the rate of sending data
