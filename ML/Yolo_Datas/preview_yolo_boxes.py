@@ -7,7 +7,7 @@ images = [file if ".png" in file else None for file in os.listdir('.')]
 img = None
 key = None
 
-print("N : next \nP: previous \nD : delete", flush=True)
+print("N : next \nP : previous \nD : delete \nA : absent\n", flush=True)
 
 def mouse_drawing(event, x, y, flags, params):
     if event == cv2.EVENT_LBUTTONDOWN:
@@ -23,7 +23,7 @@ cv2.namedWindow("Frame")
 cv2.setMouseCallback("Frame", mouse_drawing)
 
 while True:
-    if i >= 0 and i < len(images) and images[i] != None and "png" in images[i]:
+    if i >= 0 and i < len(images) and images[i] != None and ".png" in images[i]:
         # open image and draw ROI
         img = cv2.imread(images[i])
         x = int(float(images[i].split('_')[2]) * img.shape[1])
@@ -34,6 +34,10 @@ while True:
         key = cv2.waitKey(0)
         if key == 27:
             break
+        elif key == ord('a') and i < len(images) - 1:
+            os.rename(images[i], images[i].split('_')[0] + "_0_0.0_0.0.png")
+            images[i] = images[i].split('_')[0] + "_0_0.0_0.0.png"
+            i += 1
         elif key == ord('n') and i < len(images) - 1:
             i += 1
         elif key == ord('p') and i > 0:
